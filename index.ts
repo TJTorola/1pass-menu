@@ -36,8 +36,15 @@ const fzf = async (input: string): Promise<string> => {
 }
 
 const copy = async (input: string): Promise<void> => {
-  const process = run({ cmd: ['wl-copy', input] })
+  const process = run({
+    cmd: ['xclip', '-sel', 'clip'],
+    stdin: 'piped'
+  });
+  await process.stdin.write(new TextEncoder().encode(input));
+  process.stdin.close();
+
   await process.status();
+  process.close();
 }
 
 // There is more than this, but this is what I care about
